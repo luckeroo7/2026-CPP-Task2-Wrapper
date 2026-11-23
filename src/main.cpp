@@ -12,10 +12,10 @@
 using namespace std;
 
 string getParam(const map<string, any>& args, const string& key) {
-    auto it = args.find(key);
-    if (it != args.end()) {
-        const string* val = any_cast<string>(&it->second);
-        if (val) {
+    auto iter = args.find(key);
+    if (iter != args.end()) {
+        const auto* val = any_cast<string>(&iter->second);
+        if (val != nullptr) {
             return *val;
         }
     }
@@ -32,8 +32,8 @@ int main() {
 
     auto replaceW = make_shared<Wrapper<textdoc>>(
         &doc,
-        [](textdoc* d, const map<string, any>& args) {
-            return d->replaceWord(getParam(args, "target"), getParam(args, "replacement"));
+        [](textdoc* document, const map<string, any>& args) {
+            return document->replaceWord(getParam(args, "target"), getParam(args, "replacement"));
         },
         map<string, any>{{"target", string("world")}, { "replacement", string("C++") }}
     );
@@ -41,8 +41,8 @@ int main() {
 
     auto findW = make_shared<Wrapper<textdoc>>(
         &doc,
-        [](textdoc* d, const map<string, any>& args) {
-            return d->findPhrase(getParam(args, "phrase"));
+        [](textdoc* document, const map<string, any>& args) {
+            return document->findPhrase(getParam(args, "phrase"));
         },
         map<string, any>{{"phrase", string("test")}}
     );
@@ -50,19 +50,19 @@ int main() {
 
     auto capWordsW = make_shared<Wrapper<textdoc>>(
         &doc,
-        [](textdoc* d, const map<string, any>&) { return d->capitalizeWords(); }
+        [](textdoc* document, const map<string, any>&) { return document->capitalizeWords(); }
     );
     engine.register_command("capitalize_words", capWordsW);
 
     auto capSentW = make_shared<Wrapper<textdoc>>(
         &doc,
-        [](textdoc* d, const map<string, any>&) { return d->capitalizeSentences(); }
+        [](textdoc* document, const map<string, any>&) { return document->capitalizeSentences(); }
     );
     engine.register_command("capitalize_sentences", capSentW);
 
     auto numW = make_shared<Wrapper<textdoc>>(
         &doc,
-        [](textdoc* d, const map<string, any>&) { return d->numberSentences(); }
+        [](textdoc* document, const map<string, any>&) { return document->numberSentences(); }
     );
     engine.register_command("number_sentences", numW);
 

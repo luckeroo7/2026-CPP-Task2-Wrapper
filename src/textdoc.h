@@ -3,7 +3,7 @@
 
 class textdoc {
 public:
-    explicit textdoc(const std::string& text);
+    explicit textdoc(std::string text);
 
     std::string replaceWord(const std::string& target, const std::string& replacement) const;
     std::string findPhrase(const std::string& phrase) const;

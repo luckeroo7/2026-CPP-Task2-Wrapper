@@ -1,13 +1,13 @@
 #include "textdoc.h"
 #include <cctype>
-#include <sstream>
+#include <utility>
 
 using namespace std;
 
-textdoc::textdoc(const string& text) : text_(text) {}
+textdoc::textdoc(string text) : text_(std::move(text)) {}
 
 string textdoc::replaceWord(const string& target, const string& replacement) const {
-    if (target.empty()) return text_;
+    if (target.empty()) { return text_; }
     string res = text_;
     size_t pos = 0;
     while ((pos = res.find(target, pos)) != string::npos) {
@@ -18,7 +18,7 @@ string textdoc::replaceWord(const string& target, const string& replacement) con
 }
 
 string textdoc::findPhrase(const string& phrase) const {
-    if (phrase.empty()) return "Empty phrase.";
+    if (phrase.empty()) { return "Empty phrase."; }
     size_t pos = text_.find(phrase);
     if (pos != string::npos) {
         return "Found at: " + to_string(pos);
@@ -29,12 +29,12 @@ string textdoc::findPhrase(const string& phrase) const {
 string textdoc::capitalizeWords() const {
     string res = text_;
     bool flag = true;
-    for (size_t i = 0; i < res.length(); i++) {
-        if (isspace(static_cast<unsigned char>(res[i]))) {
+    for (char& c : res) {
+        if (isspace(static_cast<unsigned char>(c)) != 0) {
             flag = true;
         }
-        else if (flag && isalpha(static_cast<unsigned char>(res[i]))) {
-            res[i] = static_cast<char>(toupper(static_cast<unsigned char>(res[i])));
+        else if (flag && isalpha(static_cast<unsigned char>(c)) != 0) {
+            c = static_cast<char>(toupper(static_cast<unsigned char>(c)));
             flag = false;
         }
         else {
@@ -47,12 +47,12 @@ string textdoc::capitalizeWords() const {
 string textdoc::capitalizeSentences() const {
     string res = text_;
     bool flag = true;
-    for (size_t i = 0; i < res.length(); i++) {
-        if (flag && isalpha(static_cast<unsigned char>(res[i]))) {
-            res[i] = static_cast<char>(toupper(static_cast<unsigned char>(res[i])));
+    for (char& c : res) {
+        if (flag && isalpha(static_cast<unsigned char>(c)) != 0) {
+            c = static_cast<char>(toupper(static_cast<unsigned char>(c)));
             flag = false;
         }
-        else if (res[i] == '.' || res[i] == '!' || res[i] == '?' || res[i] == '\n') {
+        else if (c == '.' || c == '!' || c == '?' || c == '\n') {
             flag = true;
         }
     }
@@ -64,9 +64,9 @@ string textdoc::numberSentences() const {
     string current;
     int count = 1;
 
-    for (size_t i = 0; i < text_.size(); ++i) {
-        current += text_[i];
-        if (text_[i] == '.' || text_[i] == '!' || text_[i] == '?') {
+    for (char c : text_) {
+        current += c;
+        if (c == '.' || c == '!' || c == '?') {
             size_t start = current.find_first_not_of(" \t\r\n");
             if (start != string::npos) {
                 res += to_string(count++) + ". " + current.substr(start) + "\n";
