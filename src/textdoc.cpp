@@ -4,7 +4,7 @@
 
 using namespace std;
 
-textdoc::textdoc(string text) : text_(text) {}
+textdoc::textdoc(const string& text) : text_(text) {}
 
 string textdoc::replaceWord(const string& target, const string& replacement) const {
     if (target.empty()) return text_;
@@ -60,20 +60,28 @@ string textdoc::capitalizeSentences() const {
 }
 
 string textdoc::numberSentences() const {
-    stringstream ss(text_);
-    string sentence;
     string res;
+    string current;
     int count = 1;
 
-    while (getline(ss, sentence, '.')) {
-        size_t start = sentence.find_first_not_of(" \t\r\n");
-        if (start != string::npos) {
-            res += to_string(count++) + ". " + sentence.substr(start) + "\n";
+    for (size_t i = 0; i < text_.size(); ++i) {
+        current += text_[i];
+        if (text_[i] == '.' || text_[i] == '!' || text_[i] == '?') {
+            size_t start = current.find_first_not_of(" \t\r\n");
+            if (start != string::npos) {
+                res += to_string(count++) + ". " + current.substr(start) + "\n";
+            }
+            current.clear();
         }
+    }
+
+    size_t start = current.find_first_not_of(" \t\r\n");
+    if (start != string::npos) {
+        res += to_string(count) + ". " + current.substr(start);
     }
     return res;
 }
 
-string textdoc::getText() const {
+const string& textdoc::getText() const {
     return text_;
 }
