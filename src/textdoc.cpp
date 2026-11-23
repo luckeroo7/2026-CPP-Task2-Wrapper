@@ -29,12 +29,12 @@ string textdoc::findPhrase(const string& phrase) const {
 string textdoc::capitalizeWords() const {
     string res = text_;
     bool flag = true;
-    for (char& c : res) {
-        if (isspace(static_cast<unsigned char>(c)) != 0) {
+    for (char& chr : res) {
+        if (isspace(static_cast<unsigned char>(chr)) != 0) {
             flag = true;
         }
-        else if (flag && isalpha(static_cast<unsigned char>(c)) != 0) {
-            c = static_cast<char>(toupper(static_cast<unsigned char>(c)));
+        else if (flag && isalpha(static_cast<unsigned char>(chr)) != 0) {
+            chr = static_cast<char>(toupper(static_cast<unsigned char>(chr)));
             flag = false;
         }
         else {
@@ -47,12 +47,12 @@ string textdoc::capitalizeWords() const {
 string textdoc::capitalizeSentences() const {
     string res = text_;
     bool flag = true;
-    for (char& c : res) {
-        if (flag && isalpha(static_cast<unsigned char>(c)) != 0) {
-            c = static_cast<char>(toupper(static_cast<unsigned char>(c)));
+    for (char& chr : res) {
+        if (flag && isalpha(static_cast<unsigned char>(chr)) != 0) {
+            chr = static_cast<char>(toupper(static_cast<unsigned char>(chr)));
             flag = false;
         }
-        else if (c == '.' || c == '!' || c == '?' || c == '\n') {
+        else if (chr == '.' || chr == '!' || chr == '?' || chr == '\n') {
             flag = true;
         }
     }
@@ -64,9 +64,9 @@ string textdoc::numberSentences() const {
     string current;
     int count = 1;
 
-    for (char c : text_) {
-        current += c;
-        if (c == '.' || c == '!' || c == '?') {
+    for (char chr : text_) {
+        current += chr;
+        if (chr == '.' || chr == '!' || chr == '?') {
             size_t start = current.find_first_not_of(" \t\r\n");
             if (start != string::npos) {
                 res += to_string(count++) + ". " + current.substr(start) + "\n";
